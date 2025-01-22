@@ -38,5 +38,11 @@ jobs:
           npm install -g aws-cdk@2.149.0
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
 
+      - name: Manual Approval
+        uses: hmarr/auto-approve-action@v3
+        id: wait_for_approval
+        with:
+          message: "Please approve the deployment after reviewing the changeset."
+
       - name: Deploy to Beta - Stack 1
         run: npm run cdk deploy -- OpenSearch-CI-Config-Dev --require-approval any-change -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
