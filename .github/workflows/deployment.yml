@@ -21,14 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-
       - name: Assume IAM Role for Beta
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
           aws-region: us-east-1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16.x
 
       - name: Create Change Set
         run: |
