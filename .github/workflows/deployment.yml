@@ -36,7 +36,7 @@ jobs:
           npm install
           npm run build
           npm install -g aws-cdk@2.149.0
-          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
 
 #  deploy-stacks:
 #    name: Deploy Beta Stacks
