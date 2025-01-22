@@ -35,6 +35,7 @@ jobs:
       - name: Create Change Set
         run: |
           npm install
+          npm run build
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false
 
 
