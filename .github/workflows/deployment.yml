@@ -1,13 +1,10 @@
 name: Stack Deployment
 
 on:
-  push:
+  pull_request:
+    types: [ created ]
     branches:
-      - deploy
-
-  issue_comment:
-    types: [created]
-
+      - main
 jobs:
   beta-change-set:
     name: Create Change Set
