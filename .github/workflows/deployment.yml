@@ -2,6 +2,7 @@ name: Stack Deployment
 
 on:
   pull_request:
+
 jobs:
   beta-change-set:
     name: Create Change Set
