@@ -11,6 +11,9 @@ on:
 jobs:
   beta-change-set:
     name: Create Change Set
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
