@@ -26,9 +26,6 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Assume IAM Role for Beta
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
@@ -36,7 +33,9 @@ jobs:
           aws-region: us-east-1
 
       - name: Create Change Set
-        run: npm run cdk diff -- --stack-name OpenSearch-CI-Config-Dev
+        run: |
+          npm install
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false
 
 
   deploy-stacks:
