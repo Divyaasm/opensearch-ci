@@ -1,0 +1,66 @@
+name: Stack Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+  issue_comment:
+    types: [created]
+
+jobs:
+  beta-change-set:
+    name: Create Change Set in Beta Account
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Assume IAM Role for Beta
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
+          aws-region: us-east-1
+
+      - name: Create Change Set for Beta - Stack 1
+        run: npm run cdk diff -- --stack-name OpenSearch-CI-Config-Dev
+
+      - name: Notify Maintainers
+        run: |
+          echo "Please review the changeset and comment '/approve' to proceed with deployment."
+          echo "Waiting for approval..."
+
+  deploy-stacks:
+    name: Deploy Beta Stacks
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' && 
+      contains(github.event.comment.body, '/approve')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Assume IAM Role for Beta
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
+          aws-region: us-east-1
+
+      - name: Deploy to Beta - Stack 1
+        run: npm run cdk deploy -- --stack-name OpenSearch-CI-Config-Dev --require-approval any-change
