@@ -36,7 +36,7 @@ jobs:
           npm install
           npm run build
           cdk --version
-          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false
+          npx cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false
 
 
   deploy-stacks:
