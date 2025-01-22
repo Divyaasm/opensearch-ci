@@ -39,4 +39,4 @@ jobs:
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
 
       - name: Deploy to Beta - Stack 1
-        run: npm run cdk deploy -- --stack-name OpenSearch-CI-Config-Dev --require-approval any-change
+        run: npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} --require-approval any-change
