@@ -27,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Assume IAM Role for Beta
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
           role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
           aws-region: us-east-1
