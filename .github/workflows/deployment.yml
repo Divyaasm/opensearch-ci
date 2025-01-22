@@ -38,24 +38,5 @@ jobs:
           npm install -g aws-cdk@2.149.0
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
 
-#  deploy-stacks:
-#    name: Deploy Beta Stacks
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Node.js
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: '18'
-#
-#      - name: Assume IAM Role for Beta
-#        uses: aws-actions/configure-aws-credentials@v2
-#        with:
-#          role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
-#          aws-region: us-east-1
-#
-#      - name: Deploy to Beta - Stack 1
-#        run: npm run cdk deploy -- --stack-name OpenSearch-CI-Config-Dev --require-approval any-change
+      - name: Deploy to Beta - Stack 1
+        run: npm run cdk deploy -- --stack-name OpenSearch-CI-Config-Dev --require-approval any-change
