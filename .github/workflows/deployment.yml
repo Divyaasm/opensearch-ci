@@ -1,4 +1,4 @@
-name: Stack Deployment
+name: Stack Deployment Test
 
 on:
   pull_request:
