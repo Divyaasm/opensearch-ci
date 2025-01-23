@@ -1,10 +1,10 @@
-name: Stack Deployment Test
+name: Stack Deployment
 
 on:
   pull_request:
     types: [ created ]
     branches:
-      - main
+      - deploy
 
   issue_comment:
     types: [created]
