@@ -1,9 +1,10 @@
 name: Stack Deployment
 
 on:
-  push:
+  pull_request:
+    types: [ created ]
     branches:
-      - deploy
+      - main
 
   issue_comment:
     types: [created]
