@@ -1,15 +1,21 @@
 name: Stack Deployment
 
 on:
-  pull_request:
+  push:
+    branches:
+      - deploy
+
+  issue_comment:
+    types: [created]
 
 jobs:
-  beta-change-set:
+  change-set:
     name: Create Change Set
     permissions:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
 
     steps:
       - name: Checkout repository
@@ -32,11 +38,35 @@ jobs:
           npm install -g aws-cdk@2.149.0
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
 
-      - name: Manual Approval
-        uses: hmarr/auto-approve-action@v3
-        id: wait_for_approval
-        with:
-          message: "Please approve the deployment after reviewing the changeset."
 
-      - name: Deploy to Beta - Stack 1
-        run: npm run cdk deploy -- OpenSearch-CI-Config-Dev --require-approval any-change -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+  manual-approval:
+    name: Wait for PR Comment Approval
+    runs-on: ubuntu-latest
+    needs: change-set
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request != ''
+
+    steps:
+      - name: Check for Approval Comment
+        run: |
+          APPROVAL_COMMENT=$(echo "${{ github.event.comment.body }}" | grep -i "approve deployment")
+          
+          if [[ -z "$APPROVAL_COMMENT" ]]; then
+            echo "No approval comment found. Exiting"
+            exit 1
+          else
+            echo "Proceeding with deployment"
+          fi
+
+  deploy:
+    name: Deploy
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    needs: manual-approval
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Deploy
+        run: |
+          npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
