@@ -5,7 +5,7 @@ on:
 
 jobs:
   manual-approval:
-    name: Wait for PR Comment Approval
+    name: Wait for PR Comment
     permissions:
       id-token: write
       contents: read
