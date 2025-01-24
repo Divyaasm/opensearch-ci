@@ -5,7 +5,6 @@ on:
 
 jobs:
   manual-approval:
-    if: github.event_name == 'issue_comment' && contains(github.event.issue.html_url, '/pull/') && github.event.issue.state == 'closed'
     name: Wait for PR Comment Approval
     permissions:
       id-token: write
