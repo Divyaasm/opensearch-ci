@@ -1,0 +1,59 @@
+name: Deployment Approval
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  create-change-set:
+    name: Create Change Set for Beta
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Assume IAM Role
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
+          aws-region: us-east-1
+
+      - name: Create Change Set
+        run: |
+          npm install
+          npm run build
+          npm install -g aws-cdk@2.149.0
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+
+  manual-approval:
+    name: Wait for PR Comment Approval
+    runs-on: ubuntu-latest
+    needs: create-change-set
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request != ''
+
+    steps:
+      - name: Check for Approval Comment
+        run: |
+          APPROVAL_COMMENT=$(echo "${{ github.event.comment.body }}" | grep -i "approve deployment")
+          
+          if [[ -z "$APPROVAL_COMMENT" ]]; then
+            echo "No approval comment found Exiting."
+            exit 1
+          else
+            echo "Proceeding deployment."
+          fi
+
+  deployment:
+    name: Deploy
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    needs: manual-approval
+    steps:
+      - name: Deploy to Beta
+        run: |
+          npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
