@@ -1,0 +1,39 @@
+name: Create Change Set
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - deploy
+
+jobs:
+  create-change-set:
+    name: Create Change Set
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Assume IAM Role
+        uses: aws-actions/configure-aws-credentials@v4.0.2
+        with:
+          role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
+          aws-region: us-east-1
+
+
+      - name: Setup Node.js and AWS CDK
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16.x
+
+      - name: Create Change Set
+        run: |
+          npm install
+          npm run build
+          npm install -g aws-cdk@2.149.0
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
