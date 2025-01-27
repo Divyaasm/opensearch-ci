@@ -6,17 +6,14 @@ on:
 
 jobs:
   manual-approval:
-    if: |
-      github.repository == 'Divyaasm/opensearch-ci' &&
-      github.event.issue.pull_request &&
-      contains(github.event.comment.body, '"Approve Beta Deployment"')
+    if: github.event.issue.pull_request
     name: Wait for PR Comment
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
       issues: read
       pull-requests: read
-    runs-on: ubuntu-latest
     steps:
       - name: Deploy
         run: |
