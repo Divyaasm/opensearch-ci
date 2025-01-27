@@ -10,7 +10,6 @@ jobs:
       github.event.issue.pull_request &&
       contains(github.event.comment.body, 'Approve Beta Deployment')
     name: Wait for PR Comment
-    working-directory:
     permissions:
       id-token: write
       contents: read
