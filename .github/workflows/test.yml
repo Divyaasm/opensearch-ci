@@ -5,24 +5,9 @@ on:
     types: [created]
 
 jobs:
-  manual-approval:
+  example:
     runs-on: ubuntu-latest
-    permissions:
-      issues: read
-      pull-requests: read
-    if: contains(github.event.issue.html_url, '/pull/')
-
     steps:
-      - name: Debug Event Payload
-        run: echo "${{ toJson(github.event) }}"
-
-      - name: Check for Approval Comment
-        run: |
-          APPROVAL_COMMENT=$(echo "${{ github.event.comment.body }}" | grep -i "approve deployment")
-          
-          if [[ -z "$APPROVAL_COMMENT" ]]; then
-            echo "No approval comment found. Exiting."
-            exit 1
-          else
-            echo "Approval comment found."
-          fi
+      - name: Execute for pull request comments only
+        if: github.event.issue.pull_request
+        run: echo "This is a pull request comment event"
