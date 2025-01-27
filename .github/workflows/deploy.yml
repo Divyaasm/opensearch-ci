@@ -7,6 +7,7 @@ on:
 jobs:
   manual-approval:
     if: |
+      github.repository == 'Divyaasm/opensearch-ci' &&
       github.event.issue.pull_request &&
       contains(github.event.comment.body, '"Approve Beta Deployment"')
     name: Wait for PR Comment
