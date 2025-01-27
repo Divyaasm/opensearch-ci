@@ -6,6 +6,9 @@ on:
 
 jobs:
   manual-approval:
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '"Approve Beta Deployment"')
     name: Wait for PR Comment
     permissions:
       id-token: write
@@ -14,25 +17,6 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - name: Check for Approval Comment
-        run: |
-          APPROVAL_COMMENT=$(echo "${{ github.event.comment.body }}" | grep -i "approve deployment")
-          
-          if [[ -z "$APPROVAL_COMMENT" ]]; then
-            echo "No approval comment found Exiting."
-            exit 1
-          else
-            echo "Proceeding deployment."
-          fi
-
-  deployment:
-    name: Deploy
-    permissions:
-      id-token: write
-      contents: read
-    runs-on: ubuntu-latest
-    needs: manual-approval
-    steps:
-      - name: Deploy to Beta
+      - name: Deploy
         run: |
           npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
