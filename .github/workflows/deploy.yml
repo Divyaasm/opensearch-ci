@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check current directory
-        run: pwd
+        run: ls
       - name: Deploy
         run: |
           npm install
