@@ -9,7 +9,7 @@ jobs:
     if: >-
       github.event.issue.pull_request &&
       contains(github.event.comment.body, 'Approve Beta Deployment')
-    name: Get approval for deployment
+    name: Wait for PR Comment
     permissions:
       id-token: write
       contents: read
@@ -33,5 +33,10 @@ jobs:
 
       - name: Deploy
         run: |
-            npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
-            npm run cdk deploy -- OpenSearch-CI-Dev -c useSsl=false -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+          npm install
+          npm run build
+          npm install -g aws-cdk@2.149.0
+          npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=true -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+          npm run cdk deploy -- OpenSearch-CI-Dev -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true 
+          -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+
