@@ -8,7 +8,7 @@ jobs:
   beta-deployment:
     if: >-
       github.event.issue.pull_request &&
-      contains(github.event.comment.body, 'Approve Beta Deployment') &&
+      contains(github.event.comment.body, 'Approve Beta Deployment')
     name: Get approval for deployment
     permissions:
       id-token: write
