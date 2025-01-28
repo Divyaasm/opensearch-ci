@@ -20,6 +20,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install dependencies and build project
+        run: |
+          npm install
+          npm run build
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@2.149.0
+
       - name: Assume IAM Role
         uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
@@ -38,9 +46,6 @@ jobs:
           if [ $? -eq 0 ]; then
             echo "No stack changes involved"
           else
-            npm install
-            npm run build
-            npm install -g aws-cdk@2.149.0
             npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
             npm run cdk deploy -- OpenSearch-CI-Dev -c useSsl=false -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
           fi
