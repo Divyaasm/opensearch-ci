@@ -50,5 +50,5 @@ jobs:
 
       - name: Create Change Set for Prod
         run: |
-          npm run cdk diff --stack-name OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=internet -c restrictServerAccessTo=${{ secrets.INTERNET_ACCESS }}
-          npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=fasle -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.INTERNET_ACCESS }}
+          npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=false -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
