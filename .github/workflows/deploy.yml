@@ -9,7 +9,6 @@ jobs:
     if: >-
       github.event.issue.pull_request &&
       contains(github.event.comment.body, 'Approve Beta Deployment') &&
-      github.event.pull_request.merged == true
     name: Get approval for deployment
     permissions:
       id-token: write
