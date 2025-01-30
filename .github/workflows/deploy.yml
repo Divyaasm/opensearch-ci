@@ -9,7 +9,7 @@ jobs:
     if: >-
       github.event.issue.pull_request &&
       contains(github.event.comment.body, 'Approve Beta Deployment') &&
-      github.actor == 'Divyaasm'
+      github.actor == 'divyaas'
     name: Get approval for deployment
     permissions:
       id-token: write
