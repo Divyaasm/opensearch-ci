@@ -38,6 +38,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Create Change Set for Beta
+        id: cdk_diff_step
         run: |
           echo "diff_output<<EOF" >> $GITHUB_OUTPUT
 
@@ -59,5 +60,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### CDK Diff Output:\n\`\`\`\n${diff_output}\n\`\`\``
+              body: `### CDK Diff Output:\n\`\`\`\n${{ steps.cdk_diff_step.outputs.diff_output }}\n\`\`\``
             })
