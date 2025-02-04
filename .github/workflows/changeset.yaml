@@ -37,9 +37,6 @@ jobs:
           role-to-assume: ${{ secrets.DEPLOY_STACKS_ROLE }}
           aws-region: us-east-1
 
-      - name: Mask Account ID
-        run: echo "::add-mask::${{ secrets.ACCOUNT_ID }}"
-
       - name: Create Change Set for Beta
         id: cdk_diff_step
         run: |
@@ -58,11 +55,12 @@ jobs:
       - name: Update PR with ChangeSet
         uses: actions/github-script@v7
         env:
-          DIFF_OUTPUT: ${{ steps.cdk_diff_step.outputs.diff_output }}
+          AWS_ID: ${{ secrets.ACCOUNT_ID }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const maskedOutput = process.env.DIFF_OUTPUT.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
+            const diffOutput = `${{ steps.cdk_diff_step.outputs.diff_output }}`;
+            const maskedOutput = diffOutput.replace(/\b\d{12}\b/g, '[MASKED]');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
