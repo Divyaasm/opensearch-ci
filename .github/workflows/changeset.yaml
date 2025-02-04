@@ -62,7 +62,8 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const maskedOutput = process.env.DIFF_OUTPUT.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
+            const diffOutput = process.env.DIFF_OUTPUT
+            const maskedOutput = diffOutput.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
