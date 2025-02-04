@@ -60,8 +60,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const diffOutput = process.env.DIFF_OUTPUT
-            const maskedOutput = diffOutput.replace(/\b\d{12}\b/g, '[MASKED]');
+            const maskedOutput = process.env.DIFF_OUTPUT.replace(/\b\d{12}\b/g, '[MASKED]');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
