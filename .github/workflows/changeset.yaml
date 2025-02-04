@@ -49,7 +49,8 @@ jobs:
   
           echo "" >> $GITHUB_OUTPUT
           echo "## CI-Dev Stack ChangeSet" >> $GITHUB_OUTPUT
-  
+          npm run cdk diff -- OpenSearch-CI-Prod -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} >> $GITHUB_OUTPUT
+          
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR with ChangeSet
