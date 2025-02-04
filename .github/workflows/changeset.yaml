@@ -46,10 +46,6 @@ jobs:
           echo "## CI-Config Stack Changeset" >> $GITHUB_OUTPUT
           npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }}  >> $GITHUB_OUTPUT
           
-          echo "" >> $GITHUB_OUTPUT
-          echo "## CI-Dev Stack ChangeSet" >> $GITHUB_OUTPUT
-          npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} >> $GITHUB_OUTPUT
-          
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update PR with ChangeSet
@@ -64,5 +60,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `<details>\n<summary>CDK Diff Output</summary>\n\n\`\`\`\n${diffOutput}\n\`\`\`\n</details>`
+              body: `<details>\n<summary>Stack Changeset Details</summary>\n\n\`\`\`\n${diffOutput}\n\`\`\`\n</details>`
             })
