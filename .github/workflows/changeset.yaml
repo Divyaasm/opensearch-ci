@@ -64,5 +64,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `### CDK Diff Output:\n\`\`\`\n${diffOutput}\n\`\`\``
+              body: `<details>\n<summary>CDK Diff Output</summary>\n\n\`\`\`\n${diffOutput}\n\`\`\`\n</details>`
             })
