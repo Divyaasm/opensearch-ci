@@ -40,10 +40,12 @@ jobs:
       - name: Create Change Set for Beta
         id: cdk_diff_step
         run: |
+          cdk acknowledge 30717
+          
           echo "diff_output<<EOF" >> $GITHUB_OUTPUT
 
           echo "### CI-ConfigStack" >> $GITHUB_OUTPUT
-          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }}  >> $GITHUB_OUTPUT
+          npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }} >> $GITHUB_OUTPUT
   
           echo "" >> $GITHUB_OUTPUT
           
