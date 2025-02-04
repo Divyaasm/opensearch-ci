@@ -62,11 +62,10 @@ jobs:
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const diffOutput = process.env.DIFF_OUTPUT
-            const maskedOutput = diffOutput.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
+            const maskedOutput = process.env.DIFF_OUTPUT.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `<details>\n<summary>Stack Changeset Details</summary>\n\n\`\`\`\n${diffOutput}\n\`\`\`\n</details>`
+              body: `<details>\n<summary>Stack Changeset Details</summary>\n\n\`\`\`\n${maskedOutput}\n\`\`\`\n</details>`
             })
