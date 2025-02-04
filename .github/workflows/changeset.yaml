@@ -52,7 +52,7 @@ jobs:
             npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} 2>/dev/null >> $GITHUB_OUTPUT
           
             echo "EOF" >> $GITHUB_OUTPUT
-          } >/dev/null
+          } &>/dev/null
         
 
       - name: Update PR with ChangeSet
