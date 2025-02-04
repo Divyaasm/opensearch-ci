@@ -57,12 +57,10 @@ jobs:
 
       - name: Update PR with ChangeSet
         uses: actions/github-script@v7
-        env:
-          DIFF_OUTPUT: ${{ steps.cdk_diff_step.outputs.diff_output }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
-            const diffOutput = process.env.DIFF_OUTPUT
+            const diffOutput = `${{ steps.cdk_diff_step.outputs.diff_output }}`.replace(/${{ secrets.AWS_ISENGARD_ID }}/g, '[MASKED]');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
