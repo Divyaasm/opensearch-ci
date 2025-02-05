@@ -41,18 +41,15 @@ jobs:
         id: cdk_diff_step
         run: |
           cdk acknowledge 30717
-          
-          {
-            echo "diff_output<<EOF" >> $GITHUB_OUTPUT
+                      echo "diff_output<<EOF" >> $GITHUB_OUTPUT
             echo "## CI-Config Stack Changeset" >> $GITHUB_OUTPUT
-            npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }} 2>/dev/null >> $GITHUB_OUTPUT
+            npm run cdk diff -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }} | sed 's/\b\d{12}\b/[MASKED]/g'>> $GITHUB_OUTPUT
           
             echo "" >> $GITHUB_OUTPUT
             echo "## CI-Dev Stack ChangeSet" >> $GITHUB_OUTPUT
-            npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} 2>/dev/null >> $GITHUB_OUTPUT
+            npm run cdk diff -- OpenSearch-CI-Dev -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed 's/\b\d{12}\b/[MASKED]/g'>> $GITHUB_OUTPUT
           
             echo "EOF" >> $GITHUB_OUTPUT
-          } &>/dev/null
         
 
       - name: Update PR with ChangeSet
