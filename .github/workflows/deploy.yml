@@ -34,6 +34,5 @@ jobs:
           npm install
           cdk acknowledge 30717
           npm run build
-          npm install -g aws-cdk@2.149.0
-          
+          npm install -g aws-cdk@2.149.0          
           npm run cdk deploy -- OpenSearch-CI-Config-Dev -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}}
