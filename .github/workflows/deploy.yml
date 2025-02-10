@@ -10,7 +10,7 @@ jobs:
     name: Deploy to Prod Environment
     strategy:
       matrix:
-        environment: [ Dev, test ]
+        environment: [ test, Dev ]
     environment: ${{ matrix.environment }}
     permissions:
       id-token: write
