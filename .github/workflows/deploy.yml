@@ -45,5 +45,10 @@ jobs:
         run: |
           cdk acknowledge 30717
           npm run cdk deploy -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g'
-          npm run cdk deploy -- OpenSearch-CI-${{ matrix.environment }} -c useSsl=true -c authType=oidc -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g'
+          npm run cdk deploy -- OpenSearch-CI-${{ matrix.environment }} -c useSsl=true -c authType=oidc -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} --require-approval never | sed -E 's/[0-9]{12}/[MASKED]/g'
 
+      - name: Check for Deployment Failure (sed)
+        run: |
+          if sed -n '/Deployment failed:/p' deployment_logs.txt; then
+            exit 1
+          fi
