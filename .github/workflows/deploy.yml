@@ -45,7 +45,7 @@ jobs:
 
       - name: Deploy CI-Config Stack
         run: |
-          npm run cdk deploy -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g'
+          npm run cdk deploy -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=true -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} 2>&1 | tee deployment_logs.txt | sed -E 's/[0-9]{12}/[MASKED]/g' | grep "Deployment failed:" && exit 1
           exit_code=$?
           if [ $exit_code -ne 0 ]; then
             echo "Deployment failed"
