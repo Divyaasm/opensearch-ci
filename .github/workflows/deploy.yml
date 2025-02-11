@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  deploy-beta:
-    name: Deploy to Prod Environment
+  deployment:
+    name: Deploy Environment
     strategy:
       fail-fast: true
       matrix:
@@ -39,16 +39,24 @@ jobs:
           npm run build
 
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@2.149.0
-
-      - name: Deploy
         run: |
+          npm install -g aws-cdk@2.149.0
           cdk acknowledge 30717
-          npm run cdk deploy -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g'
-          npm run cdk deploy -- OpenSearch-CI-${{ matrix.environment }} -c useSsl=true -c authType=oidc -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} --require-approval never | sed -E 's/[0-9]{12}/[MASKED]/g'
 
-      - name: Check for Deployment Failure (sed)
+      - name: Deploy CI-Config Stack
         run: |
-          if sed -n '/Deployment failed:/p' deployment_logs.txt; then
+          npm run cdk deploy -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g'
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "Deployment failed"
+            exit 1
+          fi
+
+      - name: Deploy CI StacK
+        run: |
+          npm run cdk deploy -- OpenSearch-CI-${{ matrix.environment }} -c useSsl=false -c authType=oidc -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} --require-approval never | sed -E 's/[0-9]{12}/[MASKED]/g'
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "Deployment failed"
             exit 1
           fi
