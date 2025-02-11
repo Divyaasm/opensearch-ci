@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [test, Dev]
+        environment: [Dev, test]
     environment: ${{ matrix.environment }}
     permissions:
       id-token: write
@@ -49,7 +49,7 @@ jobs:
           npm run cdk diff -- OpenSearch-CI-Config-${{ matrix.environment }} -c useSsl=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{ secrets.PREFIX_LIST }} | sed -E 's/[0-9]{12}/[MASKED]/g' >> $GITHUB_OUTPUT
           
           echo "" >> $GITHUB_OUTPUT
-          echo "## CI-Dev Stack ChangeSet" >> $GITHUB_OUTPUT
+          echo "## CI-Dev Stack ChangeSet ${{ matrix.environment }}" >> $GITHUB_OUTPUT
           npm run cdk diff -- OpenSearch-CI-${{ matrix.environment }} -c useSsl=true -c authType=github -c dataRetention=true -c macAgent=true -c useProdAgents=true -c enableViews=true -c ignoreResourcesFailures=false -c serverAccessType=prefixList -c restrictServerAccessTo=${{secrets.PREFIX_LIST}} | sed -E 's/[0-9]{12}/[MASKED]/g' >> $GITHUB_OUTPUT
           
           echo "EOF" >> $GITHUB_OUTPUT
@@ -68,5 +68,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `<details>\n<summary>Stack Changeset Details</summary>\n\n\`\`\`\n${maskedOutput}\n\`\`\`\n</details>`
+              body: `<details>\n<summary>Stack Changeset Details ${{ matrix.environment }} </summary>\n\n\`\`\`\n${maskedOutput}\n\`\`\`\n</details>`
             })
